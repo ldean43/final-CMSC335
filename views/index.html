@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Earthquake Visualiser</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="public/styles.css">
+</head>
+<body>
+  <h1>Earthquake Visualiser</h1>
+  <form action="/earthquakes/fetch" method="POST">
+    <label for="range">Select Time Range:</label>
+    <select name="range" id="range" required>
+      <option value="hour">Past 1 Hour</option>
+      <option value="day">Past 1 Day</option>
+      <option value="week">Past 7 Days</option>
+      <option value="month">Past 1 Month</option>
+    </select>
+    <button type="submit">Fetch Earthquakes</button>
+  </form>
+
+  <hr>
+  <h2>Latest Stored Earthquakes (Top 20 by Magnitude)</h2>
+  <button onclick="loadEarthquakes()">Load Earthquakes</button>
+  <table id="earthquakeTable">
+    <thead>
+      <tr>
+        <th>Magnitude</th>
+        <th>Place</th>
+        <th>Time</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadEarthquakes() {
+      const res = await fetch('/earthquakes/all');
+      const data = await res.json();
+      const tbody = document.querySelector('#earthquakeTable tbody');
+      tbody.innerHTML = '';
+      data.forEach(eq => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${eq.mag}</td>
+            <td>${eq.place}</td>
+            <td>${eq.time}</td>
+            <td>${eq.latitude}</td>
+            <td>${eq.longitude}</td>
+          </tr>`;
+      });
+    }
+  </script>
+</body>
+</html>
